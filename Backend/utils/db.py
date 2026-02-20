@@ -1,5 +1,5 @@
 from pymongo import MongoClient
-from config import Config
+from ..config import Config
 
 # Initialize MongoDB client
 client = MongoClient(Config.MONGO_URI)

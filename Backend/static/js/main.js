@@ -36,41 +36,45 @@ document.addEventListener("DOMContentLoaded", () => {
                 coursesContainer.innerHTML = '<p style="color: #ef4444; text-align: center; width: 100%;">Failed to connect to the database.</p>';
             });
     }
-
-    // ==========================================
+// ==========================================
     // 2. USER REGISTRATION LOGIC
     // ==========================================
     const registerForm = document.getElementById("registerForm");
     
     if (registerForm) {
         registerForm.addEventListener("submit", (e) => {
-            e.preventDefault(); // Prevent page reload
+            e.preventDefault(); 
             
-            // Get input values
-            const inputs = registerForm.querySelectorAll('input');
-            const fullName = inputs[0].value;
-            const email = inputs[1].value;
-            const password = inputs[2].value;
+            // Get input values using their new IDs
+            const fullName = document.getElementById('regName').value;
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPassword').value;
+            const role = document.getElementById('regRole').value; // Grab the selected role
 
             fetch('/api/auth/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ full_name: fullName, email: email, password: password })
+                body: JSON.stringify({ 
+                    full_name: fullName, 
+                    email: email, 
+                    password: password,
+                    role: role // Send role to backend
+                })
             })
             .then(res => res.json())
             .then(data => {
                 if (data.error) {
                     alert("Error: " + data.error);
                 } else {
-                    alert("Registration Successful! Please login.");
+                    alert(data.message);
                     window.location.href = '/login.html'; // Redirect to login
                 }
             });
         });
     }
 
-    // ==========================================
-    // 3. USER LOGIN LOGIC
+// ==========================================
+    // 3. USER LOGIN LOGIC (SMART REDIRECT)
     // ==========================================
     const loginForm = document.getElementById("loginForm");
     
@@ -78,9 +82,9 @@ document.addEventListener("DOMContentLoaded", () => {
         loginForm.addEventListener("submit", (e) => {
             e.preventDefault();
             
-            const inputs = loginForm.querySelectorAll('input');
-            const email = inputs[0].value;
-            const password = inputs[1].value;
+            // Using exact IDs to prevent errors
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
 
             fetch('/api/auth/login', {
                 method: 'POST',
@@ -92,14 +96,21 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (data.error) {
                     alert("Error: " + data.error);
                 } else {
-                    // Save user details to browser storage so we know they are logged in
+                    // Save user details to browser storage
                     localStorage.setItem('user', JSON.stringify(data.user));
-                    window.location.href = '/dashboard.html'; // Redirect to student dashboard
+                    
+                    // SMART REDIRECT: Check role and send to correct dashboard
+                    if (data.user.role === 'admin') {
+                        alert("Welcome Admin!");
+                        window.location.href = '/admin-dashboard.html';
+                    } else {
+                        alert("Welcome Student!");
+                        window.location.href = '/dashboard.html';
+                    }
                 }
             });
         });
     }
-
     // ==========================================
     // 4. LOAD STUDENT DASHBOARD (My Courses)
     // ==========================================
@@ -178,4 +189,17 @@ function enrollCourse(courseId) {
         }
     })
     .catch(err => console.error(err));
+}
+// ==========================================
+// SHOW / HIDE PASSWORD TOGGLE
+// ==========================================
+function togglePassword(inputId, icon) {
+    const input = document.getElementById(inputId);
+    if (input.type === "password") {
+        input.type = "text";
+        icon.textContent = "🙈"; // Change to 'hide' icon
+    } else {
+        input.type = "password";
+        icon.textContent = "👁️"; // Change back to 'eye' icon
+    }
 }

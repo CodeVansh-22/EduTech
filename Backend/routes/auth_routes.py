@@ -13,15 +13,18 @@ def register():
 
     hashed_password = generate_password_hash(data.get('password'))
     
+    # Grab the role from the frontend, default to 'student'
+    role = data.get('role', 'student') 
+    
     new_user = {
         "full_name": data.get('full_name'),
         "email": data.get('email'),
         "password_hash": hashed_password,
-        "role": "student"
+        "role": role  # Save the role to MongoDB
     }
     
     users_collection.insert_one(new_user)
-    return jsonify({"message": "User registered successfully!"}), 201
+    return jsonify({"message": f"{role.capitalize()} registered successfully!"}), 201
 
 @auth_bp.route('/login', methods=['POST'])
 def login():
@@ -35,7 +38,8 @@ def login():
                 "id": str(user['_id']),
                 "full_name": user['full_name'],
                 "email": user['email'],
-                "role": user['role']
+                # .get() prevents crashes on older accounts that lack a role
+                "role": user.get('role', 'student') 
             }
         }), 200
     

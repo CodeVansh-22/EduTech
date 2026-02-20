@@ -18,7 +18,7 @@ def create_app():
     # Initialize Flask app
     app = Flask(__name__)
     app.config.from_object(Config)
-    
+    app.config['SECRET_KEY'] = 'supersecretkey'
     # Enable CORS to allow your frontend HTML files to make requests to this backend API
     CORS(app)
 

@@ -204,6 +204,90 @@ function togglePassword(inputId, icon) {
     }
 }
 // ==========================================
+// 5. ENROLL IN COURSE LOGIC (RAZORPAY)
+// ==========================================
+function enrollCourse(courseId) {
+    const userData = localStorage.getItem('user');
+    
+    if (!userData) {
+        alert("Please login to enroll in courses.");
+        window.location.href = '/login.html';
+        return;
+    }
+
+    const user = JSON.parse(userData);
+
+    // 1. Ask backend to create a Razorpay Order
+    fetch('/api/create-order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ course_id: courseId })
+    })
+    .then(res => res.json())
+    .then(orderData => {
+        if (orderData.error) {
+            alert(orderData.error);
+            return;
+        }
+
+        // 2. Configure the Razorpay Checkout Widget
+        const options = {
+            "key": orderData.key, 
+            "amount": orderData.amount, 
+            "currency": orderData.currency,
+            "name": "EDUTECH",
+            "description": orderData.course_name,
+            "image": "https://your-logo-url.com/logo.png", // Optional: Add a logo URL here
+            "order_id": orderData.order_id, 
+            "handler": function (response) {
+                // 3. This function runs when payment is SUCCESSFUL
+                // Send the payment signatures to the backend to verify and enroll
+                verifyPaymentAndEnroll(response, courseId, user.id);
+            },
+            "prefill": {
+                "name": user.full_name,
+                "email": user.email,
+            },
+            "theme": {
+                "color": "#06b6d4" // Your EDUTECH cyan color
+            }
+        };
+
+        // Open the Razorpay popup
+        const rzp1 = new Razorpay(options);
+        rzp1.on('payment.failed', function (response){
+                alert("Payment Failed. Reason: " + response.error.description);
+        });
+        rzp1.open();
+    })
+    .catch(err => console.error("Error creating order:", err));
+}
+
+// Helper function to verify payment with backend
+function verifyPaymentAndEnroll(paymentResponse, courseId, userId) {
+    fetch('/api/enroll', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            user_id: userId,
+            course_id: courseId,
+            razorpay_payment_id: paymentResponse.razorpay_payment_id,
+            razorpay_order_id: paymentResponse.razorpay_order_id,
+            razorpay_signature: paymentResponse.razorpay_signature
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.error) {
+            alert(data.error);
+        } else {
+            alert("Payment Successful! Welcome to the course.");
+            window.location.href = '/dashboard.html';
+        }
+    })
+    .catch(err => console.error(err));
+}
+// ==========================================
 // 6. LOGOUT LOGIC
 // ==========================================
 function logoutUser() {

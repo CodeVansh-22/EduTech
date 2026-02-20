@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from utils.db import enrollments_collection, courses_collection
+from ..utils.db import enrollments_collection, courses_collection
 from bson.objectid import ObjectId
 from datetime import datetime
 

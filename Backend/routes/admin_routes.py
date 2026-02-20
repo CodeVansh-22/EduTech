@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify, session
-from utils.db import users_collection, courses_collection, enrollments_collection
+from ..utils.db import users_collection, courses_collection, enrollments_collection
 from bson.objectid import ObjectId
 
 admin_bp = Blueprint('admin_routes', __name__)

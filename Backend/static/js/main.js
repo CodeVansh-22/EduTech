@@ -73,7 +73,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-// ==========================================
+    // ==========================================
     // 3. USER LOGIN LOGIC (SMART REDIRECT)
     // ==========================================
     const loginForm = document.getElementById("loginForm");
@@ -82,9 +82,9 @@ document.addEventListener("DOMContentLoaded", () => {
         loginForm.addEventListener("submit", (e) => {
             e.preventDefault();
             
-            // Using exact IDs to prevent errors
-            const email = document.getElementById('loginEmail').value;
-            const password = document.getElementById('loginPassword').value;
+            const inputs = loginForm.querySelectorAll('input');
+            const email = inputs[0].value;
+            const password = inputs[1].value;
 
             fetch('/api/auth/login', {
                 method: 'POST',

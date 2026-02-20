@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, session
 from werkzeug.security import generate_password_hash, check_password_hash
 from utils.db import users_collection
 
@@ -32,15 +32,25 @@ def login():
     user = users_collection.find_one({"email": data.get('email')})
     
     if user and check_password_hash(user['password_hash'], data.get('password')):
+        
+        # --- THE FIX: Save data to Flask Session ---
+        session['user_id'] = str(user['_id'])
+        session['role'] = user.get('role', 'student')
+        
         return jsonify({
             "message": "Login successful",
             "user": {
                 "id": str(user['_id']),
                 "full_name": user['full_name'],
                 "email": user['email'],
-                # .get() prevents crashes on older accounts that lack a role
                 "role": user.get('role', 'student') 
             }
         }), 200
     
     return jsonify({"error": "Invalid email or password"}), 401
+
+# --- ADDED LOGOUT ROUTE ---
+@auth_bp.route('/logout', methods=['GET'])
+def logout():
+    session.clear() # Clears the Flask session
+    return jsonify({"message": "Logged out successfully"}), 200

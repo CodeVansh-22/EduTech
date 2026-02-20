@@ -12,7 +12,7 @@ from .routes.admin_routes import admin_bp
 from .routes.frontend_routes import frontend_bp
 
 # Import MongoDB collection
-from .utils.db import courses_collection
+from ..utils.db import courses_collection
 
 def create_app():
     # Initialize Flask app

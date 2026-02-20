@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Register - EduSphere</title>
+    <title>Register - EDUTECH</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/style.css">
 </head>
@@ -13,7 +13,7 @@
     </div>
 
     <nav class="navbar">
-        <div class="logo">EduSphere</div>
+        <div class="logo">EDUTECH</div>
         <ul class="nav-links">
             <li><a href="index.html">Home</a></li>
             <li><a href="courses.html">Courses</a></li>
@@ -24,13 +24,25 @@
         <div class="auth-container glass">
             <h2>Create Account</h2>
             <form id="registerForm">
-                <input type="text" placeholder="Full Name" required>
-                <input type="email" placeholder="Email Address" required>
-                <input type="password" placeholder="Create Password" required>
+                <input type="text" id="regName" placeholder="Full Name" required>
+                <input type="email" id="regEmail" placeholder="Email Address" required>
+                
+                <div style="position: relative;">
+                    <input type="password" id="regPassword" placeholder="Create Password" required style="padding-right: 40px;">
+                    <span style="position: absolute; right: 15px; top: 15px; cursor: pointer; color: #cbd5e1; user-select: none;" onclick="togglePassword('regPassword', this)">👁️</span>
+                </div>
+                
+                <select id="regRole" required style="width: 100%; padding: 15px; margin-bottom: 20px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 8px; color: #fff; outline: none; font-size: 15px;">
+                    <option value="student" style="color: #000;">Register as Student</option>
+                    <option value="admin" style="color: #000;">Register as Admin</option>
+                </select>
+
                 <button type="submit" class="btn-primary" style="width: 100%;">Start Learning</button>
             </form>
             <p>Already have an account? <a href="login.html">Login</a></p>
         </div>
     </div>
+    
+    <script src="js/main.js"></script>
 </body>
 </html>

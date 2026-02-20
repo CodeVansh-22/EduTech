@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Login - EduSphere</title>
+    <title>Login - EDUTECH</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/style.css">
 </head>
@@ -13,7 +13,7 @@
     </div>
 
     <nav class="navbar">
-        <div class="logo">EduSphere</div>
+        <div class="logo">EDUTECH</div>
         <ul class="nav-links">
             <li><a href="index.html">Home</a></li>
             <li><a href="courses.html">Courses</a></li>
@@ -24,12 +24,19 @@
         <div class="auth-container glass">
             <h2>Welcome Back</h2>
             <form id="loginForm">
-                <input type="email" placeholder="Email Address" required>
-                <input type="password" placeholder="Password" required>
+                <input type="email" id="loginEmail" placeholder="Email Address" required>
+                
+                <div style="position: relative;">
+                    <input type="password" id="loginPassword" placeholder="Password" required style="padding-right: 40px;">
+                    <span style="position: absolute; right: 15px; top: 15px; cursor: pointer; color: #cbd5e1; user-select: none;" onclick="togglePassword('loginPassword', this)">👁️</span>
+                </div>
+
                 <button type="submit" class="btn-primary" style="width: 100%;">Login to Dashboard</button>
             </form>
             <p>Don't have an account? <a href="register.html">Register</a></p>
         </div>
     </div>
+
+    <script src="js/main.js"></script>
 </body>
 </html>

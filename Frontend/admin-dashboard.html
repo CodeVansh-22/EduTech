@@ -2,10 +2,27 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Admin - EduSphere</title>
+    <title>Admin - EDUTECH</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .admin-section { margin-bottom: 50px; padding: 30px; }
+        .admin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 40px; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; color: #f8fafc; text-align: left; }
+        th, td { padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        th { color: #06b6d4; font-weight: 600; }
+        tr:hover { background: rgba(255,255,255,0.05); }
+        
+        .btn-danger { background: #ef4444; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; transition: 0.3s; }
+        .btn-danger:hover { background: #dc2626; transform: translateY(-2px); }
+        
+        @media(max-width: 768px) {
+            .admin-grid { grid-template-columns: 1fr; }
+            table { font-size: 14px; }
+        }
+    </style>
 </head>
 <body>
     <div class="bg-shapes">
@@ -14,62 +31,186 @@
     </div>
 
     <nav class="navbar">
-        <div class="logo">EduSphere Admin</div>
+        <div class="logo">EDUTECH Admin</div>
         <ul class="nav-links">
             <li><a href="index.html">Live Site</a></li>
-            <li><a href="#" class="btn">Logout</a></li>
+            <li><a href="#" class="btn" onclick="logoutUser()">Logout</a></li>
         </ul>
     </nav>
 
     <section class="admin-dashboard">
         <div class="page-header glass" style="margin-bottom: 40px; padding: 30px;">
             <h2>Enrollment Analytics Overview</h2>
+            <p>Total Users: <span id="totUsers" style="color:#06b6d4; font-weight:bold;">0</span> | Total Enrollments: <span id="totEnr" style="color:#ec4899; font-weight:bold;">0</span></p>
         </div>
 
-        <div class="analytics-cards">
+        <div class="analytics-cards" style="margin-bottom: 50px;">
             <div class="card glass">
-                <h3 style="color:#fff; margin-bottom:10px;">Daily Active Users</h3>
+                <h3 style="color:#fff; margin-bottom:10px;">Daily Enrollments</h3>
                 <canvas id="dailyChart"></canvas>
             </div>
-
             <div class="card glass">
                 <h3 style="color:#fff; margin-bottom:10px;">Monthly Enrollments</h3>
                 <canvas id="monthlyChart"></canvas>
             </div>
-
             <div class="card glass">
-                <h3 style="color:#fff; margin-bottom:10px;">Revenue Growth</h3>
+                <h3 style="color:#fff; margin-bottom:10px;">Yearly Enrollments</h3>
                 <canvas id="yearlyChart"></canvas>
             </div>
         </div>
+
+        <div class="admin-grid">
+            <div class="glass admin-section">
+                <h3 style="color: #06b6d4; margin-bottom: 20px;">Add New Course</h3>
+                <form id="addCourseForm">
+                    <input type="text" id="courseTitle" placeholder="Course Title" required>
+                    <input type="text" id="courseDesc" placeholder="Short Description" required>
+                    <input type="number" id="coursePrice" placeholder="Price (₹)" required>
+                    <input type="text" id="courseImg" placeholder="Image URL (e.g., img/course.jpg)" required>
+                    <button type="submit" class="btn-primary" style="width: 100%;">Create Course</button>
+                </form>
+            </div>
+
+            <div class="glass admin-section" style="overflow-y: auto; max-height: 400px;">
+                <h3 style="color: #ec4899; margin-bottom: 20px;">Manage Courses</h3>
+                <div id="adminCourseList">
+                    <p style="color: #94a3b8;">Loading courses...</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="glass admin-section" style="overflow-x: auto;">
+            <h3 style="color: #3b82f6; margin-bottom: 20px;">Recent Enrollments</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Student Name</th>
+                        <th>Email</th>
+                        <th>Course Title</th>
+                        <th>Price Paid</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody id="enrollmentTableBody">
+                    <tr><td colspan="6" style="text-align:center;">Loading enrollments...</td></tr>
+                </tbody>
+            </table>
+        </div>
     </section>
 
+    <script src="js/main.js"></script>
     <script>
-        Chart.defaults.color = '#cbd5e1'; // Set global text color for dark mode
+        Chart.defaults.color = '#cbd5e1';
 
-        const createChart = (ctxId, type, label, data, borderColor, bgColor) => {
+        function loadAnalytics() {
+            fetch('/api/admin/analytics')
+                .then(res => res.json())
+                .then(data => {
+                    document.getElementById('totUsers').innerText = data.totals.users;
+                    document.getElementById('totEnr').innerText = data.totals.enrollments;
+
+                    createChart('dailyChart', 'line', 'Daily', data.chart_data.daily_labels, data.chart_data.daily_data, '#06b6d4', 'rgba(6, 182, 212, 0.2)');
+                    createChart('monthlyChart', 'bar', 'Monthly', data.chart_data.monthly_labels, data.chart_data.monthly_data, '#ec4899', 'rgba(236, 72, 153, 0.5)');
+                    createChart('yearlyChart', 'line', 'Yearly', data.chart_data.yearly_labels, data.chart_data.yearly_data, '#3b82f6', 'rgba(59, 130, 246, 0.2)');
+                }).catch(err => console.error("Analytics fetch failed (API may not be connected)", err));
+        }
+
+        function createChart(ctxId, type, label, labels, data, borderColor, bgColor) {
             new Chart(document.getElementById(ctxId), {
                 type: type,
                 data: {
-                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                    datasets: [{
-                        label: label,
-                        data: data,
-                        borderColor: borderColor,
-                        backgroundColor: bgColor,
-                        borderWidth: 2,
-                        tension: 0.4,
-                        fill: true
-                    }]
+                    labels: labels,
+                    datasets: [{ label: label, data: data, borderColor: borderColor, backgroundColor: bgColor, borderWidth: 2, tension: 0.4, fill: true }]
                 },
-                options: { responsive: true, scales: { y: { beginAtZero: true } } }
+                options: { responsive: true, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
             });
         }
 
-        // Initialize sample graphs
-        createChart('dailyChart', 'line', 'Logins', [12, 19, 15, 25, 22, 30], '#06b6d4', 'rgba(6, 182, 212, 0.2)');
-        createChart('monthlyChart', 'bar', 'New Students', [65, 59, 80, 81, 56, 90], '#ec4899', 'rgba(236, 72, 153, 0.5)');
-        createChart('yearlyChart', 'line', 'Revenue (₹)', [1000, 2500, 2000, 4000, 3500, 5000], '#3b82f6', 'rgba(59, 130, 246, 0.2)');
+        function loadEnrollments() {
+            fetch('/api/admin/enrollments')
+                .then(res => res.json())
+                .then(data => {
+                    const tbody = document.getElementById('enrollmentTableBody');
+                    tbody.innerHTML = '';
+                    if (data.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">No enrollments yet.</td></tr>';
+                        return;
+                    }
+                    data.forEach(enr => {
+                        tbody.innerHTML += `
+                            <tr>
+                                <td>${enr.enrollment_id}</td>
+                                <td>${enr.student_name}</td>
+                                <td>${enr.student_email}</td>
+                                <td>${enr.course_title}</td>
+                                <td>₹${enr.course_price}</td>
+                                <td>${enr.date_enrolled}</td>
+                            </tr>
+                        `;
+                    });
+                }).catch(err => console.error("Enrollments fetch failed", err));
+        }
+
+        function loadAdminCourses() {
+            fetch('/api/courses')
+                .then(res => res.json())
+                .then(data => {
+                    const list = document.getElementById('adminCourseList');
+                    list.innerHTML = '';
+                    data.forEach(course => {
+                        list.innerHTML += `
+                            <div style="display:flex; justify-content:space-between; align-items:center; padding:15px; border-bottom:1px solid rgba(255,255,255,0.1);">
+                                <div>
+                                    <h4 style="color:#fff;">${course.title}</h4>
+                                    <p style="font-size:12px; color:#94a3b8;">₹${course.price}</p>
+                                </div>
+                                <button class="btn-danger" onclick="deleteCourse(${course.id})">Delete</button>
+                            </div>
+                        `;
+                    });
+                }).catch(err => console.error("Admin courses fetch failed", err));
+        }
+
+        document.getElementById('addCourseForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const newCourse = {
+                title: document.getElementById('courseTitle').value,
+                description: document.getElementById('courseDesc').value,
+                price: document.getElementById('coursePrice').value,
+                image: document.getElementById('courseImg').value
+            };
+
+            fetch('/api/admin/courses', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(newCourse)
+            })
+            .then(res => res.json())
+            .then(data => {
+                alert(data.message);
+                document.getElementById('addCourseForm').reset();
+                loadAdminCourses();
+            }).catch(err => console.error("Add course failed", err));
+        });
+
+        function deleteCourse(courseId) {
+            if(confirm("Are you sure you want to delete this course?")) {
+                fetch('/api/admin/courses/' + courseId, { method: 'DELETE' })
+                .then(res => res.json())
+                .then(data => {
+                    alert(data.message);
+                    loadAdminCourses();
+                    loadAnalytics();
+                }).catch(err => console.error("Delete course failed", err));
+            }
+        }
+
+        window.onload = () => {
+            loadAnalytics();
+            loadEnrollments();
+            loadAdminCourses();
+        };
     </script>
 </body>
 </html>

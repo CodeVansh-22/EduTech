@@ -24,19 +24,12 @@
         <div class="auth-container glass">
             <h2>Welcome Back</h2>
             <form id="loginForm">
-                <input type="email" id="loginEmail" placeholder="Email Address" required>
-                
-                <div style="position: relative;">
-                    <input type="password" id="loginPassword" placeholder="Password" required style="padding-right: 40px;">
-                    <span style="position: absolute; right: 15px; top: 15px; cursor: pointer; color: #cbd5e1; user-select: none;" onclick="togglePassword('loginPassword', this)">👁️</span>
-                </div>
-
+                <input type="email" placeholder="Email Address" required>
+                <input type="password" placeholder="Password" required>
                 <button type="submit" class="btn-primary" style="width: 100%;">Login to Dashboard</button>
             </form>
             <p>Don't have an account? <a href="{{ url_for('frontend_routes.register') }}">Register</a></p>
         </div>
     </div>
-
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html>

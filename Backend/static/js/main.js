@@ -203,3 +203,13 @@ function togglePassword(inputId, icon) {
         icon.textContent = "👁️"; // Change back to 'eye' icon
     }
 }
+// ==========================================
+// 6. LOGOUT LOGIC
+// ==========================================
+function logoutUser() {
+    fetch('/api/auth/logout')
+    .then(() => {
+        localStorage.removeItem('user'); // Clear local storage
+        window.location.href = '/login.html'; // Send back to login
+    });
+}

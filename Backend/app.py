@@ -1,18 +1,18 @@
 from flask import Flask
 from flask_cors import CORS
-from config import Config
+from .config import Config
 
 # Import API Blueprints
-from routes.auth_routes import auth_bp
-from routes.course_routes import course_bp
-from routes.enrollment_routes import enrollment_bp
-from routes.admin_routes import admin_bp
+from .routes.auth_routes import auth_bp
+from .routes.course_routes import course_bp
+from .routes.enrollment_routes import enrollment_bp
+from .routes.admin_routes import admin_bp
 
 # Import the Frontend Blueprint
-from routes.frontend_routes import frontend_bp
+from .routes.frontend_routes import frontend_bp
 
 # Import MongoDB collection
-from utils.db import courses_collection
+from .utils.db import courses_collection
 
 def create_app():
     # Initialize Flask app

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>EDUTECH - Learn Without Limits</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="bg-shapes">
+        <div class="shape shape1"></div>
+        <div class="shape shape2"></div>
+    </div>
+
+    <nav class="navbar">
+        <div class="logo">EDUTECH</div>
+        <ul class="nav-links">
+            <li><a href="{{ url_for('frontend_routes.index') }}" class="active">Home</a></li>
+            <li><a href="{{ url_for('frontend_routes.courses') }}">Courses</a></li>
+            <li><a href="{{ url_for('frontend_routes.login') }}">Login</a></li>
+            <li><a href="{{ url_for('frontend_routes.register') }}" class="btn">Register</a></li>
+        </ul>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-content glass">
+            <h1>Upgrade Your Skills With EDUTECH</h1>
+            <p>Master programming, development, and high-demand skills from industry experts. Start building your future today.</p>
+            <a href="{{ url_for('frontend_routes.courses') }}" class="btn-primary">Explore Courses</a>
+        </div>
+    </section>
+
+    <section class="features">
+        <div class="feature-card glass">
+            <h3>Expert Instructors</h3>
+            <p>Learn directly from real industry professionals with hands-on experience.</p>
+        </div>
+        <div class="feature-card glass">
+            <h3>Project-Based</h3>
+            <p>Build a strong resume by creating real-world full-stack applications.</p>
+        </div>
+        <div class="feature-card glass">
+            <h3>Lifetime Access</h3>
+            <p>Review course materials and notes anytime, anywhere, at your own pace.</p>
+        </div>
+    </section>
+
+    <footer>
+        <p>© 2026 EDUTECH. All Rights Reserved.</p>
+    </footer>
+</body>
+</html>

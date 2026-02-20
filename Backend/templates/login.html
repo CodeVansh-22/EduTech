@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login - EDUTECH</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="bg-shapes">
+        <div class="shape shape1"></div>
+        <div class="shape shape2"></div>
+    </div>
+
+    <nav class="navbar">
+        <div class="logo">EDUTECH</div>
+        <ul class="nav-links">
+            <li><a href="{{ url_for('frontend_routes.index') }}">Home</a></li>
+            <li><a href="{{ url_for('frontend_routes.courses') }}">Courses</a></li>
+        </ul>
+    </nav>
+
+    <div class="auth-wrapper">
+        <div class="auth-container glass">
+            <h2>Welcome Back</h2>
+            <form id="loginForm">
+                <input type="email" placeholder="Email Address" required>
+                <input type="password" placeholder="Password" required>
+                <button type="submit" class="btn-primary" style="width: 100%;">Login to Dashboard</button>
+            </form>
+            <p>Don't have an account? <a href="{{ url_for('frontend_routes.register') }}">Register</a></p>
+        </div>
+    </div>
+</body>
+</html>

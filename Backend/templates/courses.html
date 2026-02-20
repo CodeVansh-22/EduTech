@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Courses - EDUTECH</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="bg-shapes">
+        <div class="shape shape1"></div>
+        <div class="shape shape2"></div>
+    </div>
+
+    <nav class="navbar">
+        <div class="logo">EDUTECH</div>
+        <ul class="nav-links">
+            <li><a href="{{ url_for('frontend_routes.index') }}">Home</a></li>
+            <li><a href="{{ url_for('frontend_routes.courses') }}" class="active">Courses</a></li>
+            <li><a href="{{ url_for('frontend_routes.login') }}">Login</a></li>
+            <li><a href="{{ url_for('frontend_routes.register') }}" class="btn">Register</a></li>
+        </ul>
+    </nav>
+
+    <section class="page-header glass">
+        <h1>Explore Our Curriculum</h1>
+        <p>From Python programming to Full-Stack Web Apps, upgrade your skills today.</p>
+    </section>
+
+    <section class="courses-grid" id="coursesContainer">
+        </section>
+
+    <footer>
+        <p>© 2026 EDUTECH. All Rights Reserved.</p>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
